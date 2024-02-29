@@ -189,6 +189,10 @@ func (e *Error) Format(s fmt.State, verb rune) {
 	}
 }
 
+func (e *Error) MarshalStackTrace() []map[string]string {
+	return e.stackTrace.MarshalLog()
+}
+
 // Error implements the error interface.
 // A result is the same as with %s formatter and does not contain a stack trace.
 func (e *Error) Error() string {

@@ -134,3 +134,44 @@ func (st *stackTrace) deduplicateFramesWithCause() ([]uintptr, int) {
 
 	return nil, len(pc)
 }
+
+func (st *stackTrace) MarshalLog() []map[string]string{
+	if st == nil {
+		return nil
+	}
+
+	res := st.marshal()
+
+	if st.causeStackTrace != nil {
+		res = append(res, st.causeStackTrace.MarshalLog()...)
+	}
+
+	return res
+}
+
+func (st *stackTrace) marshal() []map[string]string {
+	transformLine := stackTraceTransformer.transform.Load().(StackTraceFilePathTransformer)
+
+	pc, cropped := st.deduplicateFramesWithCause()
+	if len(pc) == 0 {
+		return nil
+	}
+
+	frames := frameHelperSingleton.GetFrames(pc)
+	res := make([]map[string]string, len(frames))
+	for i, frame := range frames {
+		res[i] = map[string]string{
+			"function": frame.Function() + "()",
+			"file":     transformLine(frame.File()) + ":" + strconv.Itoa(frame.Line()),
+		}
+	}
+
+	if cropped > 0 {
+		res = append(res, map[string]string{
+			"function": "...",
+			"file":     "(" + strconv.Itoa(cropped) + " duplicated frames)",
+		})
+	}
+
+	return res
+}
