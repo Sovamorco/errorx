@@ -1,4 +1,4 @@
-module github.com/joomcode/errorx
+module github.com/sovamorco/errorx
 
 go 1.11
 
