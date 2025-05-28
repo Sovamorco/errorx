@@ -11,6 +11,7 @@ import (
 type ErrorBuilder struct {
 	errorType     *Type
 	message       string
+	causeSet      bool
 	cause         error
 	mode          callStackBuildMode
 	isTransparent bool
@@ -37,6 +38,7 @@ func NewErrorBuilder(t *Type) ErrorBuilder {
 // Otherwise, it is inherited by default, as error wrapping is typically performed 'en passe'.
 // Note that even if an original error explicitly omitted the stack trace, it could be added on wrap.
 func (eb ErrorBuilder) WithCause(err error) ErrorBuilder {
+	eb.causeSet = true
 	eb.cause = err
 	if Cast(err) != nil {
 		eb.mode = stackTraceBorrow
@@ -92,6 +94,11 @@ func (eb ErrorBuilder) WithConditionallyFormattedMessage(message string, args ..
 
 // Create returns an error with specified params.
 func (eb ErrorBuilder) Create() *Error {
+	// if we try to decorate a nil - return nil.
+	if eb.causeSet && eb.cause == nil {
+		return nil
+	}
+
 	err := &Error{
 		errorType:   eb.errorType,
 		message:     eb.message,

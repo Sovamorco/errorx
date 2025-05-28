@@ -52,6 +52,13 @@ func TestErrorDecorate(t *testing.T) {
 	require.NotNil(t, Ignore(err2, testType))
 }
 
+
+func TestNilDecorate(t *testing.T) {
+	err := Decorate(nil, "b")
+
+	require.Nil(t, err)
+}
+
 func TestErrorMessages(t *testing.T) {
 	t.Run("Subtypes", func(t *testing.T) {
 		require.Equal(t, "foo.bar.internal.wat", testSubtype1.NewWithNoMessage().Error())
