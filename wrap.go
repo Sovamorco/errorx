@@ -26,7 +26,10 @@ func Decorate(err error, message string, args ...interface{}) *Error {
 }
 
 func WrapOrNil(err error, message string, args ...interface{}) error {
-	errx := Decorate(err, message, args...)
+	errx := NewErrorBuilder(transparentWrapper).
+		WithConditionallyFormattedMessage(message, args...).
+		WithCause(err).
+		Create()
 	if errx == nil {
 		return nil
 	}
