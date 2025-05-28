@@ -25,6 +25,15 @@ func Decorate(err error, message string, args ...interface{}) *Error {
 		Create()
 }
 
+func WrapOrNil(err error, message string, args ...interface{}) error {
+	errx := Decorate(err, message, args...)
+	if errx == nil {
+		return nil
+	}
+
+	return errx
+}
+
 // EnhanceStackTrace has all the properties of the Decorate() method
 // and additionally extends the stack trace of the original error.
 // Designed to be used when a original error is passed from another goroutine rather than from a direct method call.

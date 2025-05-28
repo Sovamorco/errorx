@@ -53,10 +53,12 @@ func TestErrorDecorate(t *testing.T) {
 }
 
 
-func TestNilDecorate(t *testing.T) {
-	err := Decorate(nil, "b")
+func TestWrapOrNil(t *testing.T) {
+	err := WrapOrNil(nil, "b")
 
-	require.Nil(t, err)
+	// use Equal and not Nil because Nil does not account for type.
+	// see https://go.dev/doc/faq#nil_error.
+	require.Equal(t, nil, err)
 }
 
 func TestErrorMessages(t *testing.T) {
