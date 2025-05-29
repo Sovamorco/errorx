@@ -53,8 +53,8 @@ func TestErrorDecorate(t *testing.T) {
 }
 
 
-func TestWrapOrNil(t *testing.T) {
-	err := WrapOrNil(nil, "b")
+func TestWrap(t *testing.T) {
+	err := Wrap(nil, "b")
 
 	// use Equal and not Nil because Nil does not account for type.
 	// see https://go.dev/doc/faq#nil_error.

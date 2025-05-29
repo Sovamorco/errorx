@@ -25,7 +25,7 @@ func Decorate(err error, message string, args ...interface{}) *Error {
 		Create()
 }
 
-func WrapOrNil(err error, message string, args ...interface{}) error {
+func Wrap(err error, message string, args ...interface{}) error {
 	errx := NewErrorBuilder(transparentWrapper).
 		WithConditionallyFormattedMessage(message, args...).
 		WithCause(err).
